@@ -52,7 +52,8 @@ data class AuthResponse(
     val token: String,
     val username: String,
     val displayname: String,
-    val friends: List<String>
+    val friends: List<String>,
+    val chatRooms: List<String>
 )
 
 enum class ErrorType(val value: Int){

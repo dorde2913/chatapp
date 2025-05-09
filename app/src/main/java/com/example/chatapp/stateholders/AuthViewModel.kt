@@ -89,7 +89,8 @@ class AuthViewModel @Inject constructor(
             preferences[USER_DATA] = Json.encodeToString(UserData(
                 username = retval.username,
                 displayName = retval.displayname,
-                friends = retval.friends
+                friends = retval.friends,
+                chatRooms = retval.chatRooms
             )).toByteArray()
 
         }

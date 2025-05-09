@@ -13,12 +13,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.chatapp.stateholders.ChatViewModel
+import com.example.chatapp.stateholders.HomeViewModel
 
 @Composable
 fun NewChatScreen(){
 
-    val viewModel: ChatViewModel = hiltViewModel()
+    val viewModel: HomeViewModel = hiltViewModel()
 
     Column(
         modifier = Modifier.fillMaxSize(),

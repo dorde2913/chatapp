@@ -6,11 +6,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -26,8 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import androidx.datastore.preferences.core.edit
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatapp.AUTH_TOKEN
 import com.example.chatapp.USER_DATA
@@ -47,40 +42,16 @@ import java.time.LocalTime
 @Composable
 fun ChatRoom(roomID: String){
 
-    var connected by rememberSaveable { mutableStateOf(false) }
-    val chatViewModel: ChatViewModel = hiltViewModel()
+    val viewModel: ChatViewModel = hiltViewModel()
 
-    val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsState()
     var messageToBeSent by rememberSaveable { mutableStateOf("") }
 
-    val auth_token by context.dataStore.data.map{it[AUTH_TOKEN]}.collectAsState(initial = null)
 
-    val messagesList = remember { mutableStateListOf<Message>() }
-
-
-
-
-    val userData = Json.decodeFromString<UserData>(context.dataStore.data.map{it[USER_DATA]}
-        .collectAsState(initial = Json.encodeToString(UserData()).toByteArray()).value!!.toString(charset = Charsets.UTF_8))
-
-    LaunchedEffect(auth_token) {
-        if (auth_token == null) return@LaunchedEffect
-
-
-        connected = true
-        chatViewModel.connect()
-        chatViewModel.joinRoom(roomID)
-
-        messagesList.addAll(
-            chatViewModel.getRecentMessages(roomID)
-        )
-
-        CoroutineScope(Dispatchers.IO).launch {
-            chatViewModel.latestMessage.collect{
-                messagesList.add(it as Message)//wouldn't build without redundant cast, most likely IDE is buggin out
-            }
-        }
+    LaunchedEffect(Unit) {
+        viewModel.roomID = roomID
     }
+
     Column(modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween
@@ -91,8 +62,9 @@ fun ChatRoom(roomID: String){
             reverseLayout = true
         ){
 
-            items(messagesList.reversed()){msg ->
-                MessageCard(msg.sender != userData.username,msg.sender, msg.content)
+            items(uiState.messages.reversed()){msg ->
+                MessageCard(msg.sender != viewModel.userData.username
+                    ,msg.sender, msg.content)
             }
 
         }
@@ -105,9 +77,9 @@ fun ChatRoom(roomID: String){
             Button(
                 modifier = Modifier.weight(0.3f),
                 onClick = {
-                    chatViewModel.sendMsg(
+                    viewModel.sendMsg(
                         Message(
-                            sender = userData.username,
+                            sender = viewModel.userData.username,
                             roomID = roomID,
                             content = messageToBeSent,
                             timeStamp = LocalTime.now().toNanoOfDay()
