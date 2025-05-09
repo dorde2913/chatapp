@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">chatApp</string>
+    <string name="welcome_text">Welcome!\nPlease login or register.</string>
+
+
+
+    <string name="login_selection">Login</string>
+    <string name="register_selection">Register</string>
+    <string name="login_label">Username:</string>
+    <string name="password_label">Password:</string>
+    <string name="confirm_password_label">Confirm Password:</string>
+    <string name="username_taken_error">Username already taken</string>
+    <string name="confirm_password_error">Passwords must match</string>
+    <string name="username_unknown_error">User doesn\'t exist</string>
+    <string name="bad_password_error">Incorrect password</string>
+
+    <string name="home_topbar">Chat App</string>
+
+
+</resources>
