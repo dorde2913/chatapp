@@ -6,6 +6,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.datastore.preferences.core.edit
@@ -37,6 +38,9 @@ fun HomeScreen(
 
     val chatRooms by viewModel.chatRooms.collectAsStateWithLifecycle()
 
+    LaunchedEffect(Unit) {
+        viewModel.loadChats()//za sad najbolje sto sam mogao da smislim
+    }
 
     LazyColumn {
         //ovde su razliciti chatovi
@@ -47,7 +51,6 @@ fun HomeScreen(
                         context.dataStore.edit {
                             it.remove(AUTH_TOKEN)
                         }
-
                     }
                     navigateToLogin()
                 }

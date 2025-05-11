@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatapp.AUTH_TOKEN
 import com.example.chatapp.USER_DATA
 import com.example.chatapp.data.repositories.AuthRepository
+import com.example.chatapp.data.repositories.ChatRepository
 import com.example.chatapp.data.retrofit.ErrorType
 import com.example.chatapp.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +35,7 @@ data class RegisterUiState(
 class AuthViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthRepository,
+    private val chatRepository: ChatRepository,
     @ApplicationContext private val context: Context
 ): ViewModel() {
 

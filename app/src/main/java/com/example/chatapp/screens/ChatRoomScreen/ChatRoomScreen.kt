@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.datastore.dataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatapp.AUTH_TOKEN
 import com.example.chatapp.USER_DATA
@@ -33,23 +34,26 @@ import com.example.chatapp.stateholders.ChatViewModel
 import com.example.chatapp.stateholders.UserData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.LocalTime
 
 @Composable
 fun ChatRoom(roomID: String){
-
+    val context = LocalContext.current
     val viewModel: ChatViewModel = hiltViewModel()
 
     val uiState by viewModel.uiState.collectAsState()
     var messageToBeSent by rememberSaveable { mutableStateOf("") }
 
 
+
     LaunchedEffect(Unit) {
-        viewModel.roomID = roomID
+        viewModel.joinRoom(roomID)
     }
 
     Column(modifier = Modifier.fillMaxSize(),
@@ -57,7 +61,9 @@ fun ChatRoom(roomID: String){
         verticalArrangement = Arrangement.SpaceBetween
     ){
         LazyColumn (
-            modifier = Modifier.fillMaxWidth().weight(0.9f),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.9f),
             horizontalAlignment = Alignment.CenterHorizontally,
             reverseLayout = true
         ){
@@ -68,7 +74,9 @@ fun ChatRoom(roomID: String){
             }
 
         }
-        Row(modifier = Modifier.fillMaxWidth().weight(0.1f)){
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .weight(0.1f)){
             OutlinedTextField(
                 value = messageToBeSent,
                 onValueChange = {messageToBeSent = it},

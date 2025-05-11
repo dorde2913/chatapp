@@ -20,17 +20,30 @@ import javax.inject.Singleton
 @Singleton
 class SocketManager {
 
-    private lateinit var socket: Socket
+    private var socket: Socket = IO.socket("ws://10.0.2.2:4000/", null)
 
     val _latestMessage = MutableSharedFlow<Message>(0)
     val latestMessage = _latestMessage.asSharedFlow()
 
-    fun connect(token: String, username: String) {
-        Log.d("SocketManager", "entered connect")
+    fun setOpts(token:String, username: String) {
+        if (socket.connected()){
+            disconnect()
+        }
+
+        println("Setting options for socket")
+
         val opts = IO.Options()
         opts.auth = mapOf("token" to token, "username" to username)
-
         socket = IO.socket("ws://10.0.2.2:4000/", opts)
+    }
+
+    fun connect() {
+        Log.d("SocketManager", "entered connect")
+
+        if (socket.connected()){
+            Log.d("SocketManager", "Socket already connected, change options or manually disconnect first")
+            return
+        }
 
         socket.on(Socket.EVENT_CONNECT) {
             println("Connected to Socket.IO server")
@@ -51,15 +64,26 @@ class SocketManager {
         socket.connect()
     }
 
-    fun joinRoom(roomID: String)=
+    fun joinRoom(roomID: String){
+        if (!socket.connected()){
+            Log.d("SocketManager","ERROR, can't join room when socket isn't connected")
+            return
+        }
+
         socket.emit("joinRoom", roomID)
+    }
+
 
     fun sendMsg(message: Message){
+        if (!socket.connected()){
+            Log.d("SocketManager","ERROR, can't send message when socket isn't connected")
+            return
+        }
+
         val msg = JSONObject()
         msg.put("room", message.roomID)
         msg.put("message", Json.encodeToString(message) )
         socket.emit("roomMessage", msg)
-
     }
 
     fun disconnect(){

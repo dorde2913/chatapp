@@ -14,9 +14,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
@@ -32,8 +35,6 @@ class ChatViewModel @Inject constructor(
     @ApplicationContext context: Context
 ): ViewModel() {
 
-    lateinit var userData: UserData
-    private lateinit var auth_token: String
 
     val latestMessage = chatRepository.latestMessage
 
@@ -42,24 +43,14 @@ class ChatViewModel @Inject constructor(
 
     var roomID: String? = null
 
+    val authToken = chatRepository.authToken
+    val userData = chatRepository.userData
 
 
 
     init{
         viewModelScope.launch {
-            context.dataStore.data.collect{preferences ->
-                userData = Json.decodeFromString(preferences[USER_DATA]!!.toString(charset = Charsets.UTF_8))
-                auth_token = preferences[AUTH_TOKEN]!!
-
-                connect()
-                joinRoom(roomID?:"")
-            }
-
-        }
-        viewModelScope.launch {
-
             latestMessage.collect{ message ->
-
                 println(message.content)
                 _uiState.value = _uiState.value.copy(
                     messages = _uiState.value.messages.plus(message)
@@ -67,12 +58,17 @@ class ChatViewModel @Inject constructor(
             }
         }
 
+        setOpts(authToken,userData.username)
+        connect()
+
     }
 
 
+    fun setOpts(authToken: String, username: String) =
+        chatRepository.setOpts(authToken,username)
 
     fun connect() {
-        chatRepository.connect(auth_token, userData.username)
+        chatRepository.connect()
     }
 
 
@@ -97,7 +93,7 @@ class ChatViewModel @Inject constructor(
         chatRepository.getRecentMessages(roomID)
 
 
-    suspend fun getChats() =
-        chatRepository.getChats(userData.username)
+    suspend fun getChats(username: String) =
+        chatRepository.getChats(username)
 
 }
