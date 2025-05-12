@@ -1,14 +1,20 @@
 package com.example.chatapp.screens.HomeScreen
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.edit
 
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,13 +42,16 @@ fun HomeScreen(
 
    // Text(text = "${chatRooms.size}")text = Firebase.messaging.token.await()
 
-    val chatRooms by viewModel.chatRooms.collectAsStateWithLifecycle()
+    val chatRooms by viewModel.chatRooms.collectAsStateWithLifecycle(initialValue = listOf())
 
     LaunchedEffect(Unit) {
         viewModel.loadChats()//za sad najbolje sto sam mogao da smislim
     }
 
-    LazyColumn {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         //ovde su razliciti chatovi
         item{
             Button(
@@ -62,6 +71,13 @@ fun HomeScreen(
 
             ChatRow(chat = chat, navigateToChat = navigateToChat)
 
+        }
+        item{
+            if (chatRooms.isEmpty()){
+                CircularProgressIndicator(
+                    modifier = Modifier.size(40.dp)
+                )
+            }
         }
     }
 

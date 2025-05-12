@@ -1,6 +1,7 @@
 package com.example.chatapp.stateholders
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatapp.AUTH_TOKEN
 import com.example.chatapp.USER_DATA
 import com.example.chatapp.data.repositories.ChatRepository
+import com.example.chatapp.data.retrofit.models.Chat
 import com.example.chatapp.data.socketio.Message
 import com.example.chatapp.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +27,7 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 data class ChatUiState(
+   // val chat: Chat? = null,
     val messages: List<Message> = listOf()
 )
 
@@ -41,10 +44,11 @@ class ChatViewModel @Inject constructor(
     val _uiState = MutableStateFlow(ChatUiState())
     val uiState = _uiState.asStateFlow()
 
-    var roomID: String? = null
 
     val authToken = chatRepository.authToken
     val userData = chatRepository.userData
+
+    val currentChat = chatRepository.currentChat
 
 
 
@@ -59,35 +63,49 @@ class ChatViewModel @Inject constructor(
         }
 
         setOpts(authToken,userData.username)
-        connect()
 
+        connect()
     }
 
 
     fun setOpts(authToken: String, username: String) =
         chatRepository.setOpts(authToken,username)
 
-    fun connect() {
+    fun connect() =
         chatRepository.connect()
-    }
+
+
+
 
 
     fun disconnect() =
         chatRepository.disconnect()
 
     fun joinRoom(roomID: String) {
+        //ovo mozda deluje malo glupo ali ce biti dobro za slucajeve kad neko promeni
+        //ime grupe ili sliku pa da se azurira i to prilikom rekompozicije
         chatRepository.joinRoom(roomID)
         viewModelScope.launch {
+//            _uiState.value = _uiState.value.copy(
+//                chat = getChat(roomID)
+//            )
+            chatRepository._currentChat.value = getChat(roomID) ?: Chat(_id = "")
             _uiState.value = _uiState.value.copy(
                 messages = getRecentMessages(roomID)
             )
         }
 
+
     }
 
+    suspend fun getChat(roomID: String) =
+        chatRepository.getChat(roomID)
 
-    fun sendMsg(message: Message) =
+    fun sendMsg(message: Message) {
+        Log.d("ChatViewModel","Sending message at ${message.timeStamp}")
         chatRepository.sendMsg(message)
+    }
+
 
         suspend fun getRecentMessages(roomID: String) =
         chatRepository.getRecentMessages(roomID)

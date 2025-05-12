@@ -47,6 +47,7 @@ import com.example.chatapp.stateholders.AuthViewModel
 @Composable
 fun LoginScreen(
     navigateToHome: ()->Unit,
+    viewModel: AuthViewModel
 ){
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -63,7 +64,8 @@ fun LoginScreen(
 
 
         LoginRegisterMenu(
-            navigateToHome = navigateToHome
+            navigateToHome = navigateToHome,
+            viewModel = viewModel
         )
 
     }
@@ -71,7 +73,8 @@ fun LoginScreen(
 
 @Composable
 fun LoginRegisterMenu(
-    navigateToHome: ()->Unit
+    navigateToHome: ()->Unit,
+    viewModel: AuthViewModel
 ){
     var selectedLogin by rememberSaveable { mutableStateOf(true) }
 
@@ -164,14 +167,14 @@ fun LoginRegisterMenu(
                     visible = selectedLogin,
                     direction = Direction.LEFT
                 ){
-                    LoginForm(navigateToHome)
+                    LoginForm(navigateToHome, viewModel)
                 }
 
                 HorizontallySlidingContainer(
                     visible = !selectedLogin,
                     direction = Direction.RIGHT
                 ){
-                    RegistrationForm(navigateToHome)
+                    RegistrationForm(navigateToHome, viewModel)
                 }
 
             }

@@ -37,9 +37,9 @@ import kotlinx.coroutines.flow.map
 
 @Composable
 fun RegistrationForm(
-    navigateToHome: ()->Unit
+    navigateToHome: ()->Unit,
+    viewModel: AuthViewModel
 ){
-    val viewModel: AuthViewModel = hiltViewModel()
     val context = LocalContext.current
 
     val uiState by viewModel.registerState.collectAsStateWithLifecycle()

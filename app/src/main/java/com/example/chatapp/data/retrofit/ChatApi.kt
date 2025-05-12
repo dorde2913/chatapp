@@ -7,6 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 const val BASE_URL = "http://10.0.2.2:4000/"
@@ -30,6 +31,9 @@ interface ChatApi{
 
     @POST("user/getChats")
     suspend fun getChats(@Body chats: ChatsBody): List<Chat>
+
+    @GET("user/getChat/{roomID}")
+    suspend fun getChat(@Path("roomID") roomID: String): Chat?
 }
 
 data class ChatsBody(
@@ -48,12 +52,12 @@ data class ChatBody(
 
 
 data class AuthResponse(
-    val error: Int,
-    val token: String,
-    val username: String,
-    val displayname: String,
-    val friends: List<String>,
-    val chatRooms: List<String>
+    val error: Int = ErrorType.NO_RESPONSE.value,
+    val token: String = "",
+    val username: String = "",
+    val displayname: String = "",
+    val friends: List<String> = listOf(),
+    val chatRooms: List<String> = listOf()
 )
 
 enum class ErrorType(val value: Int){
@@ -61,6 +65,7 @@ enum class ErrorType(val value: Int){
     UNKNOWN_USER(1),
     BAD_PASSWORD(2),
     DUPLICATE_USER(3),
+    NO_RESPONSE(4)
 }
 
 data class LoginBody(

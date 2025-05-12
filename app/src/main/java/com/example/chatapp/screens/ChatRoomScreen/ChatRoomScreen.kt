@@ -40,21 +40,24 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.time.Instant
 import java.time.LocalTime
 
 @Composable
-fun ChatRoom(roomID: String){
+fun ChatRoom(
+    roomID: String,
+    ){
     val context = LocalContext.current
     val viewModel: ChatViewModel = hiltViewModel()
 
     val uiState by viewModel.uiState.collectAsState()
     var messageToBeSent by rememberSaveable { mutableStateOf("") }
 
-
-
     LaunchedEffect(Unit) {
         viewModel.joinRoom(roomID)
     }
+
+
 
     Column(modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -69,8 +72,9 @@ fun ChatRoom(roomID: String){
         ){
 
             items(uiState.messages.reversed()){msg ->
-                MessageCard(msg.sender != viewModel.userData.username
-                    ,msg.sender, msg.content)
+
+                MessageCard(message = msg)
+
             }
 
         }
@@ -85,16 +89,18 @@ fun ChatRoom(roomID: String){
             Button(
                 modifier = Modifier.weight(0.3f),
                 onClick = {
+                    viewModel.joinRoom(roomID) //ovo radi, nece mu nista biti ako ovako ostane, iako nije logicno bas
                     viewModel.sendMsg(
                         Message(
                             sender = viewModel.userData.username,
                             roomID = roomID,
                             content = messageToBeSent,
-                            timeStamp = LocalTime.now().toNanoOfDay()
+                            timeStamp = Instant.now().epochSecond
                         )
                     )
                     messageToBeSent = ""
                 },
+                enabled = (messageToBeSent.isNotBlank())
             ){
                 Text("send message")
             }

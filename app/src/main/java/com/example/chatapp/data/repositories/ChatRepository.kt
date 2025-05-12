@@ -1,12 +1,14 @@
 package com.example.chatapp.data.repositories
 
 import android.content.Context
+import android.util.Log
 import com.example.chatapp.AUTH_TOKEN
 import com.example.chatapp.USER_DATA
 import com.example.chatapp.data.retrofit.ChatApi
 import com.example.chatapp.data.retrofit.ChatBody
 import com.example.chatapp.data.retrofit.ChatsBody
 import com.example.chatapp.data.retrofit.RoomBody
+import com.example.chatapp.data.retrofit.models.Chat
 
 import com.example.chatapp.data.socketio.Message
 import com.example.chatapp.data.socketio.SocketManager
@@ -41,7 +43,13 @@ class ChatRepository @Inject constructor(
 
     lateinit var authToken: String
     lateinit var userData: UserData
+
+    val _currentChat = MutableStateFlow(Chat(_id=""))
+    val currentChat = _currentChat.asStateFlow()
+
     init{
+        Log.d("ChatRepository", "Init block")
+
         CoroutineScope(Dispatchers.IO).launch {
             context.dataStore.data.collect{
                 authToken = it[AUTH_TOKEN] ?: ""
@@ -82,6 +90,9 @@ class ChatRepository @Inject constructor(
 
     suspend fun getChats(username: String)=
         chatApi.getChats(ChatsBody(username))
+
+    suspend fun getChat(roomID: String) =
+        chatApi.getChat(roomID)
 
 
 }

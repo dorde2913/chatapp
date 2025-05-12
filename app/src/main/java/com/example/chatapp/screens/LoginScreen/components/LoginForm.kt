@@ -40,10 +40,9 @@ import kotlinx.coroutines.flow.map
 
 @Composable
 fun LoginForm(
-    navigateToHome: ()->Unit
+    navigateToHome: ()->Unit,
+    viewModel: AuthViewModel
 ){
-
-    val viewModel: AuthViewModel = hiltViewModel()
 
     val context = LocalContext.current
     val auth_token by context.dataStore.data.map{it[AUTH_TOKEN]}.collectAsState(initial = null)
