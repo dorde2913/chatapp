@@ -89,4 +89,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json) // Latest version
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.messaging)
+
+    implementation(libs.coil.compose)
 }

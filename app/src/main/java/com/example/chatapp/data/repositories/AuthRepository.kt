@@ -7,6 +7,9 @@ import com.example.chatapp.data.retrofit.LoginBody
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/*
+ovo se iskljucivo koristi za autentikaciju, mozda se spoji posle sa user repo ko zna
+ */
 @Singleton
 class AuthRepository @Inject constructor(
     private val chatApi: ChatApi

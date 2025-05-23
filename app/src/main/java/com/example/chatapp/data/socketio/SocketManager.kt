@@ -35,6 +35,8 @@ class SocketManager {
         val opts = IO.Options()
         opts.auth = mapOf("token" to token, "username" to username)
         socket = IO.socket("ws://10.0.2.2:4000/", opts)
+
+        Log.d("SocketManager","Set options for socket")
     }
 
     fun connect() {
@@ -60,7 +62,6 @@ class SocketManager {
 
             println("Message from $sender: $message")
         }
-
         socket.connect()
     }
 

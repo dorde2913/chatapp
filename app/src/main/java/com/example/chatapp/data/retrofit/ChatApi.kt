@@ -7,6 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -34,7 +35,16 @@ interface ChatApi{
 
     @GET("user/getChat/{roomID}")
     suspend fun getChat(@Path("roomID") roomID: String): Chat?
+
+    @POST("user/setPfp")
+    suspend fun setProfilePic(@Body body: PfpBody)
+
 }
+
+data class PfpBody(
+    val username: String,
+    val pic: ByteArray
+)
 
 data class ChatsBody(
     val username: String
@@ -44,9 +54,9 @@ data class RoomBody(
 )
 
 data class ChatBody(
-    val name: String,
-    val isGroup: Boolean,
-    val participants: List<String>
+    val name: String? = null,
+    val isGroup: Boolean = false,
+    val participants: List<String> = listOf(),
 )
 
 

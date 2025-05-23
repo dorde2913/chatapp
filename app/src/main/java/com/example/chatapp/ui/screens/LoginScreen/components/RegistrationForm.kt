@@ -1,4 +1,4 @@
-package com.example.chatapp.screens.LoginScreen.components
+package com.example.chatapp.ui.screens.LoginScreen.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -34,44 +33,42 @@ import com.example.chatapp.data.retrofit.ErrorType
 import com.example.chatapp.dataStore
 
 import com.example.chatapp.stateholders.AuthViewModel
-
 import kotlinx.coroutines.flow.map
 
-
 @Composable
-fun LoginForm(
+fun RegistrationForm(
     navigateToHome: ()->Unit,
     viewModel: AuthViewModel
 ){
-
     val context = LocalContext.current
-    val auth_token by context.dataStore.data.map{it[AUTH_TOKEN]}.collectAsState(initial = null)
 
+    val uiState by viewModel.registerState.collectAsStateWithLifecycle()
 
-    val waiting by viewModel.waiting.collectAsStateWithLifecycle()
     val error by viewModel.error.collectAsStateWithLifecycle()
-
-    val uiState by viewModel.loginState.collectAsStateWithLifecycle()
+    val waiting by viewModel.waiting.collectAsStateWithLifecycle()
+    val auth_token by context.dataStore.data.map{it[AUTH_TOKEN]}.collectAsState(initial = null)
 
     LaunchedEffect(waiting,auth_token){
         if (!waiting && auth_token!=null){
-            if (auth_token != ""){
+            if (auth_token != "") {
                 navigateToHome()
             }
         }
     }
 
-    println(error)
+    val passwordsMatching = (uiState.password == uiState.confirmPassword)
+
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
 
         OutlinedTextField(
             value = uiState.username,
-            onValueChange = {viewModel.setLoginUsername(it)},
+            onValueChange = {viewModel.setRegisterUsername(it)},
             label = {
                 Text(text = stringResource(R.string.login_label))
             },
@@ -80,19 +77,17 @@ fun LoginForm(
                     imageVector = Icons.Default.AccountCircle,
                     contentDescription = null
                 )
-            },
-            isError = (error == ErrorType.UNKNOWN_USER.value),
-
+            } ,
+            isError = (error == ErrorType.DUPLICATE_USER.value),
             supportingText = {
-                if (error == ErrorType.UNKNOWN_USER.value){
-                    Text(text = stringResource(R.string.username_unknown_error))
-                }
+                if (error == ErrorType.DUPLICATE_USER.value )
+                    Text(text = stringResource(R.string.username_taken_error))
             }
         )
 
         OutlinedTextField(
             value = uiState.password,
-            onValueChange = {viewModel.setLoginPassword(it)},
+            onValueChange = {viewModel.setRegisterPassword(it)},
             label = {
                 Text(text = stringResource(R.string.password_label))
             },
@@ -103,29 +98,40 @@ fun LoginForm(
                 )
             },
             visualTransformation = PasswordVisualTransformation(),
-            isError = (error == ErrorType.BAD_PASSWORD.value),
-            supportingText = {
-                if (error == ErrorType.BAD_PASSWORD.value){
-                    Text(text = stringResource(R.string.bad_password_error))
-                }
-            }
+            //isError = (confirmPasswordValue != passwordValue),
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        OutlinedTextField(
+            value = uiState.confirmPassword,
+            onValueChange = {viewModel.setConfirmPassword(it)},
+            label = {
+                Text(text = stringResource(R.string.confirm_password_label))
+            },
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = null
+                )
+            },
+            visualTransformation = PasswordVisualTransformation(),
+            isError = !passwordsMatching,
+            supportingText = {
+                if (!passwordsMatching)
+                    Text(text = stringResource(R.string.confirm_password_error))}
+        )
+
+        Spacer(modifier = Modifier.height(30.dp))
 
         Button(
             onClick = {
-                viewModel.login()
+                viewModel.register()
             },
-            enabled = (!waiting && uiState.password!="")
+            enabled = (passwordsMatching && !waiting)
         ) {
-            if (!waiting)
-                Text(
-                    text = stringResource(R.string.login_selection)
-                )
-            else CircularProgressIndicator()
+            Text(
+                text = stringResource(R.string.register_selection)
+            )
         }
-
     }
 
 }

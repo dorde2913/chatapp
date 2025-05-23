@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.chatapp.AUTH_TOKEN
 import com.example.chatapp.USER_DATA
 import com.example.chatapp.data.repositories.ChatRepository
+import com.example.chatapp.data.repositories.UserRepository
 import com.example.chatapp.data.retrofit.models.Chat
 import com.example.chatapp.data.socketio.Message
 import com.example.chatapp.dataStore
@@ -35,6 +36,7 @@ data class ChatUiState(
 class ChatViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val chatRepository: ChatRepository,
+    private val userRepository: UserRepository,
     @ApplicationContext context: Context
 ): ViewModel() {
 
@@ -45,8 +47,8 @@ class ChatViewModel @Inject constructor(
     val uiState = _uiState.asStateFlow()
 
 
-    val authToken = chatRepository.authToken
-    val userData = chatRepository.userData
+    val authToken = userRepository.authToken.value
+    val userData = userRepository.userData.value
 
     val currentChat = chatRepository.currentChat
 

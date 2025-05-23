@@ -44,6 +44,9 @@ class HomeViewModel @Inject constructor(
     private val _chatRooms = MutableStateFlow(listOf<Chat>())
     val chatRooms = _chatRooms.asStateFlow()
 
+    val connectionFailed = chatRepository.connectionFailed
+
+    fun refresh() = chatRepository.refresh()
 
 
     fun loadChats() = viewModelScope.launch {

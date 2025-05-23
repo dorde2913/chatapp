@@ -31,68 +31,116 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/*
+ovaj repo je za dohvatanje poruka/chatova, pravljenje chatova, slanje poruka etc sve vezano za
+same chatove
+ */
 @Singleton
 class ChatRepository @Inject constructor(
     private val socketManager: SocketManager,
     private val chatApi: ChatApi,
     @ApplicationContext context: Context
 ){
-    /*
-    rad sa socketom, i pozivi za cuvanje poruka u db?
-     */
-
-    lateinit var authToken: String
-    lateinit var userData: UserData
 
     val _currentChat = MutableStateFlow(Chat(_id=""))
     val currentChat = _currentChat.asStateFlow()
 
-    init{
-        Log.d("ChatRepository", "Init block")
+    val _connectionFailed = MutableStateFlow(false)
+    val connectionFailed = _connectionFailed.asStateFlow()
 
-        CoroutineScope(Dispatchers.IO).launch {
-            context.dataStore.data.collect{
-                authToken = it[AUTH_TOKEN] ?: ""
-                if (it[USER_DATA]!=null)
-                    userData = Json.decodeFromString(it[USER_DATA]!!.toString(Charsets.UTF_8))
-            }
-        }
-
-    }
 
 
     val latestMessage = socketManager.latestMessage
 
-
+    private fun logError(e: Exception) = Log.e("ChatRepository",e.toString())
 
     fun setOpts(token: String, username: String) =
         socketManager.setOpts(token,username)
-    fun connect() =
-        socketManager.connect()
+
+    fun connect() {
+        try{
+            socketManager.connect()
+        }
+        catch(e: Exception){
+            logError(e)
+        }
+    }
+
+    fun refresh() {
+        _connectionFailed.value = false
+    }
 
     fun disconnect() {
         socketManager.disconnect()
     }
 
 
-    fun sendMsg(message: Message) =
-        socketManager.sendMsg(message = message)
+    fun sendMsg(message: Message) {
+        try{
+            socketManager.sendMsg(message = message)
+        }
+        catch(e: Exception){
+            logError(e)
+        }
+    }
 
-    fun joinRoom(roomID: String) =
-        socketManager.joinRoom(roomID)
+
+    fun joinRoom(roomID: String) {
+        try{
+            socketManager.joinRoom(roomID)
+        }
+        catch(e: Exception){
+            logError(e)
+        }
+    }
 
 
-    suspend fun createRoom(name: String,isGroup: Boolean, participants: List<String>) =
-        chatApi.createRoom(ChatBody(name,isGroup,participants))
+
+
+    suspend fun createRoom(name: String,isGroup: Boolean, participants: List<String>)=
+        try{
+            chatApi.createRoom(ChatBody(name,isGroup,participants))
+        }
+        catch(e: Exception){
+            logError(e)
+            ChatBody()
+        }
+
+
 
     suspend fun getRecentMessages(roomID: String) =
-        chatApi.getRecentMessages(RoomBody(roomID))
+        try{
+            chatApi.getRecentMessages(RoomBody(roomID))
+        }
+        catch(e: Exception){
+            logError(e)
+            listOf()
+        }
+
+
 
     suspend fun getChats(username: String)=
-        chatApi.getChats(ChatsBody(username))
+        try{
+            chatApi.getChats(ChatsBody(username))
+        }
+        catch(e: Exception){
+            _connectionFailed.value = true
+            logError(e)
+            listOf()
+        }
 
-    suspend fun getChat(roomID: String) =
-        chatApi.getChat(roomID)
+
+
+    suspend fun getChat(roomID: String)=
+        try{
+            chatApi.getChat(roomID)
+        }
+        catch(e: Exception){
+            logError(e)
+            null
+        }
+
+
 
 
 }

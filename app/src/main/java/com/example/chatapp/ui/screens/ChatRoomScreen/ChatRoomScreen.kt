@@ -1,4 +1,4 @@
-package com.example.chatapp.screens.ChatRoomScreen
+package com.example.chatapp.ui.screens.ChatRoomScreen
 
 
 import androidx.compose.foundation.layout.Arrangement
@@ -29,7 +29,7 @@ import com.example.chatapp.AUTH_TOKEN
 import com.example.chatapp.USER_DATA
 import com.example.chatapp.data.socketio.Message
 import com.example.chatapp.dataStore
-import com.example.chatapp.screens.ChatRoomScreen.components.MessageCard
+import com.example.chatapp.ui.screens.ChatRoomScreen.components.MessageCard
 import com.example.chatapp.stateholders.ChatViewModel
 import com.example.chatapp.stateholders.UserData
 import kotlinx.coroutines.CoroutineScope

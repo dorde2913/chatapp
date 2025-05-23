@@ -1,4 +1,4 @@
-package com.example.chatapp.screens
+package com.example.chatapp.ui.screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
@@ -44,57 +44,41 @@ interface Destination{
     val topBarText: String
 }
 
-interface IconDestination: Destination{
+interface IconDestination: Destination {
     //ne znam kako se nisam ranije setio da moze ovako
     val icon: @Composable()(Dp)->Unit
     val selectedIcon: @Composable()(Dp)->Unit
+    val label: String
 }
 
-object LoginDestination: Destination{
-    override val route: String
-        get() = "login"
-    override val topBarText: String
-        get() = ""
-}
 
-object HomeDestination: IconDestination{
+object HomeDestination: IconDestination {
     override val icon: @Composable (Dp) -> Unit
         get() = {Icon(painter = painterResource(R.drawable.unselectedchathomeicon),null,
             modifier = Modifier.size(it))}
     override val selectedIcon: @Composable (Dp) -> Unit
         get() = {Icon(painter = painterResource(R.drawable.chathomeicon),null,
             modifier = Modifier.size(it))}
+    override val label: String
+        get() = "Chats"
 
     override val route: String
         get() = "home"
     override val topBarText: String
         get() = "Chat App :D"
 
-
 }
 
-object NewChatDestination: Destination{
-    override val route: String = "newchat"
-    override val topBarText: String
-        get() = "Create New Chat"
-
-}
-
-object ChatRoomDestination: Destination{
-    override val route: String = "chatroom"
-    override val topBarText: String
-        get() = ""
-
-
-}
-
-object ContactsDestination: IconDestination{
+object ContactsDestination: IconDestination {
     override val icon: @Composable (Dp) -> Unit
         get() = {Icon(Icons.Outlined.Person,null,
             modifier = Modifier.size(it))}
     override val selectedIcon: @Composable (Dp) -> Unit
         get() = {Icon(Icons.Filled.Person,null,
             modifier = Modifier.size(it))}
+
+    override val label: String
+        get() = "Contacts"
 
     override val route: String = "contacts"
     override val topBarText: String
@@ -103,7 +87,41 @@ object ContactsDestination: IconDestination{
 
 }
 
-val navigationBarDestinations = listOf(HomeDestination,ContactsDestination)
+
+object LoginDestination: Destination {
+    override val route: String
+        get() = "login"
+    override val topBarText: String
+        get() = ""
+}
+
+
+object NewChatDestination: Destination {
+    override val route: String = "newchat"
+    override val topBarText: String
+        get() = "Create New Chat"
+
+}
+
+object ChatRoomDestination: Destination {
+    override val route: String = "chatroom"
+    override val topBarText: String
+        get() = ""
+
+
+}
+
+
+object ProfileDestination: Destination{
+    override val route: String
+        get() = "profile"
+    override val topBarText: String
+        get() = "My Profile"
+
+}
+
+
+val navigationBarDestinations = listOf(HomeDestination, ContactsDestination)
 
 val allDestinations =
     mapOf(

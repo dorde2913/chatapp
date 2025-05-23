@@ -1,4 +1,4 @@
-package com.example.chatapp.screens.NewChatScreen
+package com.example.chatapp.ui.screens.NewChatScreen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

@@ -9,6 +9,7 @@ import com.example.chatapp.AUTH_TOKEN
 import com.example.chatapp.USER_DATA
 import com.example.chatapp.data.repositories.AuthRepository
 import com.example.chatapp.data.repositories.ChatRepository
+import com.example.chatapp.data.repositories.UserRepository
 import com.example.chatapp.data.retrofit.ErrorType
 import com.example.chatapp.dataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,8 +37,11 @@ class AuthViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val authRepository: AuthRepository,
     private val chatRepository: ChatRepository,
+    private val userRepository: UserRepository,
     @ApplicationContext private val context: Context
 ): ViewModel() {
+
+    val userData = userRepository.userData
 
     val _loginState = MutableStateFlow(LoginUiState())
     val loginState = _loginState.asStateFlow()
@@ -51,6 +55,8 @@ class AuthViewModel @Inject constructor(
 
     val _error = MutableStateFlow(ErrorType.NO_ERROR.value)
     val error = _error.asStateFlow()
+
+    val chat = chatRepository.currentChat
 
     fun setWaiting(value: Boolean){
         _waiting.value = value

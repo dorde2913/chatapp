@@ -1,4 +1,4 @@
-package com.example.chatapp.screens.LoginScreen
+package com.example.chatapp.ui.screens.LoginScreen
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -40,8 +40,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatapp.R
-import com.example.chatapp.screens.LoginScreen.components.LoginForm
-import com.example.chatapp.screens.LoginScreen.components.RegistrationForm
+import com.example.chatapp.ui.screens.LoginScreen.components.LoginForm
+import com.example.chatapp.ui.screens.LoginScreen.components.RegistrationForm
 import com.example.chatapp.stateholders.AuthViewModel
 
 @Composable

@@ -1,4 +1,4 @@
-package com.example.chatapp.screens.HomeScreen.components
+package com.example.chatapp.ui.screens.HomeScreen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

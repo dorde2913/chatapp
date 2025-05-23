@@ -1,4 +1,4 @@
-package com.example.chatapp.screens.ChatRoomScreen.components
+package com.example.chatapp.ui.screens.ChatRoomScreen.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
