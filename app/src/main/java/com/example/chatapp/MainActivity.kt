@@ -20,6 +20,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,6 +34,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -56,9 +58,14 @@ import com.example.chatapp.ui.screens.NewChatScreen.NewChatScreen
 import com.example.chatapp.ui.screens.ProfileDestination
 import com.example.chatapp.ui.screens.ProfileScreen.ProfileScreen
 import com.example.chatapp.ui.theme.ChatAppTheme
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.FirebaseMessagingService
+import com.google.firebase.messaging.ktx.messaging
+import com.google.firebase.messaging.messaging
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "user_info")
@@ -109,6 +116,8 @@ fun ChatApp(){
         navController.navigate(LoginDestination.route)
     }
 
+
+
     /*
         Ovaj viewmodel realno koristimo u ekranu za login ali
          zelimo da inicijalizujemo chat repository pre nego sto nam zatreba u home ekranu
@@ -117,6 +126,13 @@ fun ChatApp(){
          mozda nije najbolje resenje
      */
     val authViewModel: AuthViewModel = hiltViewModel()
+
+    LaunchedEffect(Unit) {
+        //ovo mozda kasnije pomerim
+        val token = FirebaseMessaging.getInstance().token.await()
+        authViewModel.sendFCMToken(token)
+
+    }
 
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)

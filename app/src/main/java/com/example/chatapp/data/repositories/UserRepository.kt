@@ -1,9 +1,11 @@
 package com.example.chatapp.data.repositories
 
 import android.content.Context
+import android.util.Log
 import com.example.chatapp.AUTH_TOKEN
 import com.example.chatapp.USER_DATA
 import com.example.chatapp.data.retrofit.ChatApi
+import com.example.chatapp.data.retrofit.FCMTokenBody
 import com.example.chatapp.data.retrofit.PfpBody
 import com.example.chatapp.dataStore
 import com.example.chatapp.stateholders.UserData
@@ -39,7 +41,9 @@ class UserRepository @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             context.dataStore.data.collect{preferences ->
                 if (preferences[USER_DATA]!=null) {
+                    println("test")
                     _userData.value = Json.decodeFromString(preferences[USER_DATA]!!.toString(Charsets.UTF_8))
+                    Log.d("UserRepo",_userData.value.pfpUrl)
                 }
 
                 if (preferences[AUTH_TOKEN]!=null){
@@ -48,8 +52,24 @@ class UserRepository @Inject constructor(
 
             }
         }
+
     }
 
     suspend fun setProfilePic(pic: ByteArray,username: String) =
-        chatApi.setProfilePic(PfpBody(username,pic))
+        try{
+            chatApi.setProfilePic(PfpBody(username,pic))
+        }
+        catch(err: Exception){
+            Log.e("UserRepo",err.toString())
+        }
+
+
+    suspend fun sendFCMToken(token: String) =
+        try{
+            chatApi.sendFCMToken(FCMTokenBody( token,_userData.value.username))
+        }
+        catch(err: Exception){
+            Log.e("UserRepo",err.toString())
+        }
+
 }

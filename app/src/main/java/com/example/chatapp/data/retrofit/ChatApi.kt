@@ -36,10 +36,20 @@ interface ChatApi{
     @GET("user/getChat/{roomID}")
     suspend fun getChat(@Path("roomID") roomID: String): Chat?
 
-    @POST("user/setPfp")
+    @PUT("user/setPfp")
     suspend fun setProfilePic(@Body body: PfpBody)
 
+    @POST("user/FCM/sendToken")
+    suspend fun sendFCMToken(@Body body: FCMTokenBody)
 }
+
+/*
+ovo sve ovde treba malo da se sredi nmp kako doduse
+ */
+data class FCMTokenBody(
+    val token: String,
+    val username: String
+)
 
 data class PfpBody(
     val username: String,

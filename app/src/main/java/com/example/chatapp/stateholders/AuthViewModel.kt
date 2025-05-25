@@ -127,6 +127,9 @@ class AuthViewModel @Inject constructor(
         setWaiting(false)
 
     }
+
+    suspend fun sendFCMToken(token: String) =
+        userRepository.sendFCMToken(token)
 }
 
 @Serializable
@@ -134,5 +137,6 @@ data class UserData(
     val username: String = "",
     val displayName: String = "",
     val chatRooms: List<String>?= null,
-    val friends: List<String>?=null
+    val friends: List<String>?=null,
+    val pfpUrl: String = ""
 )

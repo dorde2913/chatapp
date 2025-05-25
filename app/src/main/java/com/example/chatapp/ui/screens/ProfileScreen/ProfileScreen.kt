@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -53,6 +54,7 @@ import com.example.chatapp.ui.screens.ChatRoomScreen.components.darken
 import com.example.chatapp.ui.screens.ProfileScreen.components.ProfileInfoRow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
@@ -64,24 +66,27 @@ fun ProfileScreen(){
     val viewModel: UserViewmodel = hiltViewModel()
 
     val userData by viewModel.userData.collectAsStateWithLifecycle()
-    var reloadKey by rememberSaveable { mutableStateOf(false) }
+
+
 
     val context = LocalContext.current
-    var _uri: Uri? by rememberSaveable { mutableStateOf(null) }
+
     val pickedImage = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
-        _uri = uri
         if (uri!=null){
             Log.d("Photo","image: $uri")
             CoroutineScope(Dispatchers.IO).launch {
                 val compressed = compressImageFromUri(context, uri)
-                if (compressed!=null)
+                if (compressed!=null){
                     viewModel.setProfilePic(compressed,userData.username)
-
+                }
             }
         }
         else Log.d("Photo","none")
     }
 
+    LaunchedEffect(userData) {
+        Log.d("Profile Screen",userData.pfpUrl)
+    }
 
 
     Column(
@@ -94,11 +99,8 @@ fun ProfileScreen(){
         ){
 
 
-
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(BASE_URL+"user/pfp/${userData.username}")
-                    .build(),
+                BASE_URL + "user/pfp/${userData.pfpUrl}",
                 null,
                 modifier = Modifier
                     .clip(CircleShape)
