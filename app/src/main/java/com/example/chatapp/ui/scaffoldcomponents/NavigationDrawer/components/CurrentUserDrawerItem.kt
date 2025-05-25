@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -15,7 +16,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.chatapp.R
+import com.example.chatapp.data.retrofit.BASE_URL
 import com.example.chatapp.stateholders.UserData
 
 @Composable
@@ -34,10 +37,13 @@ fun CurrentUserDrawerItem(
         modifier = modifier,
         horizontalArrangement = Arrangement.Center
     ){
-        Image(
-            painter = painterResource(R.drawable.ic_launcher_background),
+        AsyncImage(
+            BASE_URL + "user/pfp/${userData.pfpUrl}",
             null,
-            modifier = Modifier.size(75.dp).clip(CircleShape)
+            modifier = Modifier
+                .clip(CircleShape)
+                .size(75.dp),
+            clipToBounds = true
         )
     }
 

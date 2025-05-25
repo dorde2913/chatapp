@@ -138,5 +138,6 @@ data class UserData(
     val displayName: String = "",
     val chatRooms: List<String>?= null,
     val friends: List<String>?=null,
-    val pfpUrl: String = ""
+    val pfpUrl: String = "",
+    val about: String = ""
 )

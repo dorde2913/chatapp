@@ -182,7 +182,10 @@ fun ChatApp(){
                     currentDestination = currentDestination,
                     drawerState = drawerState,
                     scope = scope,
-                    viewModel = authViewModel
+                    viewModel = authViewModel,
+                    popBackStack = {
+                        navController.popBackStack()
+                    }
                 )
 
             },

@@ -55,7 +55,8 @@ class ChatNotificationService: FirebaseMessagingService() {
                         displayName = update.displayname,
                         friends = update.friends,
                         chatRooms = update.chatRooms,
-                        pfpUrl = update.pfpUrl
+                        pfpUrl = update.pfpUrl,
+                        about = update.about
                     )
                 ).toByteArray()
             }
@@ -70,5 +71,6 @@ data class UserDataUpdate(
     val displayname: String,
     val friends: List<String>,
     val chatRooms: List<String>,
-    val pfpUrl: String
+    val pfpUrl: String,
+    val about: String
 )

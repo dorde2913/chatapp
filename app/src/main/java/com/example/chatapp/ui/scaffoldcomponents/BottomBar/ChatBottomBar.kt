@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import com.example.chatapp.ui.screens.LoginDestination
+import com.example.chatapp.ui.screens.bottomNavigationRoutes
 import com.example.chatapp.ui.screens.navigationBarDestinations
 
 @Composable
@@ -16,7 +17,7 @@ fun ChatBottomBar(
     currentDestination: NavDestination?,
     onNavBarItemClick: (String) -> Unit
 ){
-    if (currentDestination?.route == LoginDestination.route) return
+    if (currentDestination?.route !in bottomNavigationRoutes) return
 
     NavigationBar{
         navigationBarDestinations.forEach { destination ->

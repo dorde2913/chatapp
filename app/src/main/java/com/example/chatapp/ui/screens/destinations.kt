@@ -123,12 +123,22 @@ object ProfileDestination: Destination{
 
 val navigationBarDestinations = listOf(HomeDestination, ContactsDestination)
 
-val allDestinations =
-    mapOf(
-        LoginDestination.route to LoginDestination,
-        HomeDestination.route to HomeDestination,
-        NewChatDestination.route to NewChatDestination,
-        ChatRoomDestination.route to ChatRoomDestination,
-        ContactsDestination.route to ContactsDestination,
-    )
+// mesta gde treba da se prikaze top/bottom bar
+val bottomNavigationRoutes = setOf(
+    HomeDestination.route,
+    ContactsDestination.route
+)
 
+val topSearchBarRoutes = setOf(
+    HomeDestination.route,
+    ContactsDestination.route,
+)
+
+val allDestinations = mapOf(
+    ProfileDestination.route to ProfileDestination,
+    HomeDestination.route to HomeDestination,
+    LoginDestination.route to LoginDestination,
+    ChatRoomDestination.route to ChatRoomDestination,
+    NewChatDestination.route to NewChatDestination,
+    ContactsDestination.route to ContactsDestination
+)

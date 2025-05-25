@@ -1,6 +1,8 @@
 package com.example.chatapp.data.retrofit
 
 
+import com.example.chatapp.data.repositories.AboutBody
+import com.example.chatapp.data.repositories.DisplayBody
 import com.example.chatapp.data.retrofit.models.Chat
 import com.example.chatapp.data.socketio.Message
 import retrofit2.http.Body
@@ -41,6 +43,12 @@ interface ChatApi{
 
     @POST("user/FCM/sendToken")
     suspend fun sendFCMToken(@Body body: FCMTokenBody)
+
+    @POST("user/setAbout")
+    suspend fun setAbout(@Body aboutBody: AboutBody)
+
+    @POST("user/setDisplayName")
+    suspend fun setDisplayName(@Body displayBody: DisplayBody)
 }
 
 /*

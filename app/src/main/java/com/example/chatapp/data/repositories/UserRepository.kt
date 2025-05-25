@@ -72,4 +72,30 @@ class UserRepository @Inject constructor(
             Log.e("UserRepo",err.toString())
         }
 
+    suspend fun setAbout(about: String) =
+        try{
+            chatApi.setAbout(AboutBody(_userData.value.username,about))
+        }
+        catch(err: Exception){
+            Log.e("UserRepo",err.toString())
+        }
+
+
+    suspend fun setDisplayName(name: String) =
+        try{
+            chatApi.setDisplayName(DisplayBody(_userData.value.username,name))
+        }
+        catch(err: Exception){
+            Log.e("UserRepo",err.toString())
+        }
 }
+
+data class AboutBody(
+    val username: String,
+    val about: String
+)
+
+data class DisplayBody(
+    val username: String,
+    val displayname: String
+)

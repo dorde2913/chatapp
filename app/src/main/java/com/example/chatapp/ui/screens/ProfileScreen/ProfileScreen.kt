@@ -131,6 +131,10 @@ fun ProfileScreen(){
             }
         }
 
+        /*
+        display name i about treba da budu editable, treba da se napravi bolja ikonica za username,
+        taj editing na backendu da se uradi na slican nacin kao set pfp
+         */
 
         ProfileInfoRow(
             modifier = Modifier.padding(top = 32.dp, bottom = 16.dp),
@@ -138,7 +142,11 @@ fun ProfileScreen(){
                 Icon(Icons.Outlined.Person,null,tint = tint,modifier = modifier)
             },
             label = "Displayed Name",
-            value = "Dorde"
+            value = userData.displayName,
+            editable = true,
+            updateData = {
+                viewModel.setDisplayName(it)
+            }
         )
 
         ProfileInfoRow(
@@ -148,7 +156,8 @@ fun ProfileScreen(){
                 Icon(Icons.Outlined.MailOutline,null,tint = tint,modifier = modifier)
             },
             label = "Username",
-            value = "@dorde"
+            editable = false,
+            value = "@${userData.username}",
         )
 
         ProfileInfoRow(
@@ -157,7 +166,11 @@ fun ProfileScreen(){
                 Icon(Icons.Outlined.Info,null,tint = tint,modifier = modifier)
             },
             label = "About",
-            value = "Alo breeee"
+            value = userData.about,
+            editable = true,
+            updateData = {
+                viewModel.setAbout(it)
+            }
         )
 
 
