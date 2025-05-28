@@ -38,7 +38,7 @@ fun CurrentUserDrawerItem(
         horizontalArrangement = Arrangement.Center
     ){
         AsyncImage(
-            BASE_URL + "user/pfp/${userData.pfpUrl}",
+            BASE_URL + "nonprotected/pfp/${userData.pfpUrl}",
             null,
             modifier = Modifier
                 .clip(CircleShape)

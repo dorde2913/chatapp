@@ -1,32 +1,43 @@
 package com.example.chatapp.hilt
 
+import android.content.Context
+import com.example.chatapp.data.retrofit.AuthInterceptor
 import com.example.chatapp.data.retrofit.BASE_URL
 import com.example.chatapp.data.retrofit.ChatApi
 import com.example.chatapp.data.socketio.SocketManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import okhttp3.internal.platform.android.AndroidLogHandler.setLevel
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Inject
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object Module{
 
+
+
     @Singleton
     @Provides
-    fun providesChatApi(): ChatApi{
+    fun providesChatApi(
+         authInterceptor: AuthInterceptor
+    ): ChatApi{
         val httpLoggingInterceptor = HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         }
 
+
         val okHttpClient = OkHttpClient.Builder().apply {
             addInterceptor(httpLoggingInterceptor)
+            addInterceptor(authInterceptor)
         }.build()
 
         val retrofit = Retrofit.Builder()

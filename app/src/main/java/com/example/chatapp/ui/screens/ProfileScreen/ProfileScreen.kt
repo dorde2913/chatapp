@@ -100,7 +100,7 @@ fun ProfileScreen(){
 
 
             AsyncImage(
-                BASE_URL + "user/pfp/${userData.pfpUrl}",
+                BASE_URL + "nonprotected/pfp/${userData.pfpUrl}",
                 null,
                 modifier = Modifier
                     .clip(CircleShape)
@@ -132,8 +132,7 @@ fun ProfileScreen(){
         }
 
         /*
-        display name i about treba da budu editable, treba da se napravi bolja ikonica za username,
-        taj editing na backendu da se uradi na slican nacin kao set pfp
+         treba da se napravi bolja ikonica za username
          */
 
         ProfileInfoRow(
@@ -176,6 +175,8 @@ fun ProfileScreen(){
 
     }
 }
+
+
 
 suspend fun compressImageFromUri(
     context: Context,

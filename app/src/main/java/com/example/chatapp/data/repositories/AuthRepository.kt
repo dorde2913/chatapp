@@ -15,22 +15,20 @@ class AuthRepository @Inject constructor(
     private val chatApi: ChatApi
 ){
 
-    suspend fun login(username: String, password: String) =
+    private suspend fun tryCatch(call: suspend()->AuthResponse) =
         try{
-            chatApi.login(LoginBody(username, password))
+            call()
         }
         catch(error: Exception){
             Log.e("Auth Repository", error.toString())
             AuthResponse()
         }
+
+
+    suspend fun login(username: String, password: String) =
+        tryCatch {chatApi.login(LoginBody(username, password))}
 
 
     suspend fun register(username: String, password: String) =
-        try{
-            chatApi.register(LoginBody(username,password))
-        }
-        catch(error: Exception){
-            Log.e("Auth Repository", error.toString())
-            AuthResponse()
-        }
+        tryCatch { chatApi.register(LoginBody(username,password)) }
 }

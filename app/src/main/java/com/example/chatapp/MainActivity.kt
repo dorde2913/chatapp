@@ -35,6 +35,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -104,16 +105,16 @@ fun ChatApp(){
     //val viewModel: LoginViewModel = viewModel()
 
     val navigateToChat: (String) ->Unit = {
-        navController.navigate(
+        navController.navigateSingleTop(
             "${ChatRoomDestination.route}/$it"
         )
     }
     val navigateToHome = {
-        navController.navigate(HomeDestination.route)
+        navController.navigateSingleTop(HomeDestination.route)
     }
 
     val navigateToLogin = {
-        navController.navigate(LoginDestination.route)
+        navController.navigateSingleTop(LoginDestination.route)
     }
 
 
@@ -150,7 +151,7 @@ fun ChatApp(){
                 ChatNavigationDrawer(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 10.dp),
                     userData = userData,
-                    navigateToProfile = {navController.navigate(ProfileDestination.route)},
+                    navigateToProfile = {navController.navigateSingleTop(ProfileDestination.route)},
                     closeDrawer = {
                         scope.launch {
                             drawerState.apply {
@@ -172,7 +173,7 @@ fun ChatApp(){
                 ChatBottomBar(
                     currentDestination = currentDestination,
                     onNavBarItemClick = { route ->
-                        navController.navigate(route)
+                        navController.navigateSingleTop(route)
                     }
                 )
             },
@@ -195,7 +196,7 @@ fun ChatApp(){
                     FloatingActionButton(
                         onClick = {
 
-                            navController.navigate(
+                            navController.navigateSingleTop(
                                 NewChatDestination.route
                             )
 
@@ -267,5 +268,11 @@ fun ChatApp(){
 
 
 
+    }
+}
+
+fun NavController.navigateSingleTop(route: String){
+    this.navigate(route){
+        launchSingleTop = true
     }
 }

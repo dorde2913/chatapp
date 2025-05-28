@@ -26,6 +26,24 @@ import javax.inject.Singleton
  */
 
 @Singleton
+class TokenProvider @Inject constructor(
+    @ApplicationContext context: Context
+){
+    val _authToken = MutableStateFlow("")
+    val authToken = _authToken.asStateFlow()
+    init{
+        CoroutineScope(Dispatchers.IO).launch {
+            context.dataStore.data.collect{preferences ->
+                if (preferences[AUTH_TOKEN]!=null){
+                    _authToken.value = preferences[AUTH_TOKEN]!!
+                }
+            }
+        }
+
+    }
+}
+
+@Singleton
 class UserRepository @Inject constructor(
     @ApplicationContext context: Context,
     val chatApi: ChatApi

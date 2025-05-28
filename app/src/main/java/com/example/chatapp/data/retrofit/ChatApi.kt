@@ -16,13 +16,13 @@ import retrofit2.http.Query
 const val BASE_URL = "http://10.0.2.2:4000/"
 
 interface ChatApi{
-    @POST("user/login")
+    @POST("nonprotected/login")
     suspend fun login(@Body body: LoginBody): AuthResponse
 
-    @POST("user/test")
+    @POST("nonprotected/test")
     suspend fun testToken(@Header("authorization") token: String): String
 
-    @POST("user/register")
+    @POST("nonprotected/register")
     suspend fun register(@Body body: LoginBody): AuthResponse
 
     @POST("user/createChat")
